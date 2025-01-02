@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 
 const App = () => {
   const [Length, setLength] = useState(8);
   const [Number, setNumber] = useState(false);
   const [Character, setCharacter] = useState(false);
   const [Password, setPassword] = useState('');
+
+  //Using ref to copy the password
+  const passwordRef =  useRef(null)
 
   const getPassword = () => {
     let str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -24,6 +27,12 @@ const App = () => {
     getPassword();
   }, [Length, Number, Character]);
 
+  const copycode = useCallback(()=>{
+    passwordRef.current?.select()
+    window.navigator.clipboard.writeText(Password)
+  },[Password])
+
+
   return (
     <>
       <div className='w-full h-screen bg-zinc-900 flex justify-center items-center'>
@@ -36,8 +45,12 @@ const App = () => {
               name=""
               id=""
               readOnly
+              ref={passwordRef}
             />
             <button
+            onClick={()=>{
+              copycode()
+            }}
               className='w-3/12 bg-blue-500 p-2 text-md font-bold text-white rounded-tr-lg rounded-br-lg'
             >
               Copy
